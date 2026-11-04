@@ -1,0 +1,6 @@
+{{:assign gda_org_config=$config}}
+{{if $module.config.display_theme == "commun"}}
+{{#module name="theme_personnalise"}}
+{{:include file="/theme_personnalise/_module_head.html" title=$title config=$gda_org_config}}
+{{else}}{{:admin_header title=$title layout="public" custom_css=$module.url|cat:"style.css"}}{{/module}}
+{{else}}{{:admin_header title=$title layout="public" custom_css=$module.url|cat:"style.css"}}{{/if}}

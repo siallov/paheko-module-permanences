@@ -1,0 +1,57 @@
+{{if !$module.config.access}}
+	{{:assign var="module.config.access" value="write"}}
+{{/if}}
+
+{{#restrict section="config" level="admin"}}
+	{{:assign var="access_config" value=true}}
+{{/restrict}}
+{{#restrict section="users" level=$module.config.access}}
+	{{:assign var="access_permanences" value=true}}
+{{/restrict}}
+
+<p>{{:include file="./_return_site.html"}}</p>
+{{if $access_config || $access_permanences}}
+<nav class="tabs">
+	{{if $current == 'config'}}
+		<aside>
+		{{if $event}}
+			{{:linkbutton shape="plus" label="Nouveau créneau" href="config_slot.html?new=%s"|args:$event.key target="_dialog"}}
+		{{else}}
+			{{:linkbutton shape="plus" label="Nouvel événement" href="config_event.html?new=1"}}
+		{{/if}}
+		</aside>
+	{{elseif $event}}
+		<aside>
+			{{:linkbutton shape="search" label="Chercher les inscriptions liées" href="?event=%s&past=%d&users=1"|args:$event.key:$_GET.past}}
+			{{:linkbutton shape="plus" label="Inscrire" href="./?event=%s"|args:$event.key}}
+		</aside>
+	{{/if}}
+
+	<ul>
+	{{if $access_permanences}}
+		<li{{if $current == 'index'}} class="current"{{/if}}><a href="./">Inscription</a></li>
+		<li{{if $current == 'permanences'}} class="current"{{/if}}><a href="planning.html">Voir les inscriptions</a></li>
+	{{/if}}
+		<li{{if $current == 'my_permanences'}} class="current"{{/if}}><a href="mes_reservations.html">Mes réservations</a></li>
+	{{if $access_config}}
+		<li{{if $current == 'config'}} class="current"{{/if}}><a href="config.html">Configuration</a></li>
+        <li><a href="apparence.html">Thème et retour au site</a></li>
+	{{/if}}
+	</ul>
+
+	{{if $event}}
+		<ul class="sub">
+			<li class="title">{{$event.label}}</li>
+			{{if $current === 'permanences'}}
+			<li {{if $subcurrent === 'default'}}class="current"{{/if}}><a href="?event={{$event.key}}">Inscriptions</a></li>
+			<li{{if $current == 'permanences'}} class="current"{{/if}}><a href="planning.html">Voir les inscriptions</a></li>
+			{{/if}}
+		</ul>
+	{{elseif $current === 'config'}}
+		<ul class="sub">
+			<li{{if !$subcurrent}} class="current"{{/if}}><a href="config.html">Événements</a></li>
+			<li{{if $subcurrent === 'access'}} class="current"{{/if}}><a href="config_access.html">Accès</a></li>
+		</ul>
+	{{/if}}
+</nav>
+{{/if}}

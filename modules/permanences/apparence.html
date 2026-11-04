@@ -1,0 +1,40 @@
+{{#restrict section="config" level="admin" block=true}}{{/restrict}}
+{{#form on="save_display"}}
+    {{if $_POST.display_theme != "defaut" && $_POST.display_theme != "commun"}}
+        {{:error message="Choisissez le thème Paheko ou le thème commun personnalisé."}}
+    {{/if}}
+    {{if $_POST.return_site_visibility != "oui" && $_POST.return_site_visibility != "non"}}
+        {{:error message="Choisissez si le lien de retour doit être affiché."}}
+    {{/if}}
+    {{:assign retour=$_POST.return_site_url|trim}}
+    {{if $retour && !$retour|regexp_match:"!^https?://[^[:space:]<>]+$!iD"}}
+        {{:error message="L’adresse de retour doit commencer par https:// ou http://. Laissez-la vide pour revenir au site de cette installation."}}
+    {{/if}}
+    {{:save key="config"
+        display_theme=$_POST.display_theme
+        return_site_url=$retour|or:null
+        return_site_label=$_POST.return_site_label|trim|or:null
+        return_site_visibility=$_POST.return_site_visibility
+    }}
+    {{:redirect to="apparence.html?ok=1"}}
+{{/form}}
+{{:admin_header title="Thème et lien de retour"}}
+{{:assign var="display_themes" defaut="Thème Paheko par défaut — autonome" commun="Thème commun personnalisé du site"}}
+{{:assign var="return_visibility" oui="Afficher le lien" non="Masquer le lien"}}
+<p>{{:linkbutton href="index.html" label="Voir le module"}}</p>
+{{if $_GET.ok}}<p class="block confirm">Paramètres d’affichage enregistrés.</p>{{/if}}
+{{:form_errors}}
+<form method="post" action="">
+<fieldset><legend>Présentation du module</legend><dl>
+{{:input type="select" name="display_theme" required=true label="Thème utilisé" options=$display_themes default="defaut" source=$module.config}}
+</dl>
+<p class="help">Le thème Paheko fonctionne sans personnalisation du module web. Le thème commun utilise les fichiers _module_head.html et _module_foot.html installés dans le module web, ainsi que son CSS et ses réglages. Sur une nouvelle installation, laissez le thème par défaut tant que ces fichiers ne sont pas installés.</p>
+</fieldset>
+<fieldset><legend>Lien de retour au site</legend><dl>
+{{:input type="select" name="return_site_visibility" required=true label="Visibilité" options=$return_visibility default="oui" source=$module.config}}
+{{:input type="text" name="return_site_url" label="Adresse du site" source=$module.config help="Adresse complète, par exemple https://association.fr/. Vide : site de cette installation Paheko."}}
+{{:input type="text" name="return_site_label" label="Texte du lien" default="Retour au site" source=$module.config maxlength=100}}
+</dl></fieldset>
+<p class="submit">{{:button type="submit" name="save_display" label="Enregistrer" class="main"}}</p>
+</form>
+{{:admin_footer}}

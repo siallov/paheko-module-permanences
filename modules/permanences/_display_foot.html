@@ -1,0 +1,5 @@
+{{if $module.config.display_theme == "commun"}}
+{{#module name="theme_personnalise"}}
+{{:include file="/theme_personnalise/_module_foot.html"}}
+{{else}}{{:admin_footer}}{{/module}}
+{{else}}{{:admin_footer}}{{/if}}

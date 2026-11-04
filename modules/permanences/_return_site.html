@@ -1,0 +1,3 @@
+{{if $module.config.return_site_visibility != "non"}}
+{{:linkbutton href=$module.config.return_site_url|or:$root_url label=$module.config.return_site_label|or:"Retour au site"}}
+{{/if}}
